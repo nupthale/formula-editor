@@ -8,6 +8,7 @@ import { selectedCapIdState } from './extensions/cap/selected';
 import { suggest } from './extensions/suggest';
 import { capPlugin } from './extensions/cap/plugin';
 import { nameToId } from './extensions/nameToId';
+import { idToName } from './extensions/idToName';
 import { theme } from './extensions/theme';
 import { editorContext } from './extensions/context';
 
@@ -31,7 +32,6 @@ export default function Editor({
         const state = EditorState.create({
             doc: defaultDoc,
             extensions: [
-                basicSetup,
                 theme,
                 editorContext.init(() => context),
                 astState,
@@ -39,6 +39,10 @@ export default function Editor({
                 suggest({ onNodeChange, onChange }),
                 capPlugin,
                 nameToId,
+                // idToName监听键盘事件，需要在basicSetup前
+                idToName,
+
+                basicSetup,
             ],
         });
 
