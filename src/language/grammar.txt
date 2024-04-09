@@ -1,0 +1,96 @@
+grammar Formula;
+
+formula
+  : logical logical* EOF
+  ;
+
+// 顺序与优先级对应  
+/**
+ * 二元操作部分，为什么这么写，参考如何消除左递归示例
+ * E→E+T/ T
+ * T→T*F/ F
+ * F→（E）/ I
+ *
+ * ===>
+ *
+ * E→TE'
+ * E'→+TE'|ε
+ * T→FT '
+ * T'→*FT'|ε
+ * F→(E)|i
+ */
+logical
+  : comparison (LogicOperator comparison?)*
+  | (LogicaOperator comparison?)+
+  ;  
+
+comparison
+  : concatenation (ComparisonOperator concatenation)*
+  | (ComparisonOperator concatenation?)+
+  ;
+
+concatenation
+  : addition (Concatenate addition)*
+  | (Concatenate addition?)+
+  ;  
+
+// addition和其他binary不同，只有一条规则的原因：
+// addition和prefix是有交集，addition如果缺左值，则识别为prefix
+addition
+  : multiplication (AdditionOperator multiplication)*
+  ;  
+
+multiplication
+  : primary (MultiplicationOperator primary)*
+  | (MultiplicationOperator primary?)+
+  ;
+
+// PRIMARY  
+primary
+  : primaryPrime ('.' identifier?)*
+  | ('.' identifier?)+
+  ;
+
+primaryPrime
+  : parenthesized
+  | literal
+  | identifier
+  | invalid
+  | prefix
+  ;
+
+prefix
+  : ('+' | '-')+ primary?
+  ;  
+
+
+// BASIC  
+parenthesized
+  : '(' formula? ')'?
+  ;
+
+literal
+  : NUMBER | BOOLEAN | STRING
+  ;
+
+// FunctionName在JS中也是Identifier，但是我们的语义与JS不同，这里FunctionName与Call绑定一起处理  
+identifier
+  : reference 
+  | call
+  ;
+
+reference
+  : NAME | ESCAPENAME | IDENTIFIER
+  ; 
+
+call
+  : FUNCIONNAME arguments
+  ;
+
+arguments
+  : '(' formula? (',' formula?)* ')'?
+  ;
+
+invalid
+  : INVALID+
+  ;  
