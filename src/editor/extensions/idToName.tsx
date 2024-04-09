@@ -12,7 +12,7 @@ class Visitor extends BaseVisitor<void> {
 
     private selectedCapId: string | undefined;
 
-    constructor(private view: EditorView) {
+    constructor(private view: EditorView, private event: KeyboardEvent) {
         super();
 
         this.formula = view.state.field(astState)!;
@@ -28,19 +28,20 @@ class Visitor extends BaseVisitor<void> {
             this.selectedCapId &&
             node.id === this.selectedCapId
         ) {
+            this.event.preventDefault();
             this.view.dispatch({
-                changes: { from: from + 1, to, insert: '' },
+                changes: { from: from, to, insert: '' },
                 effects: selectCap.of(undefined),
             });
         }
 
         // 2. 如果光标在cap后，此时输入删除，则idToName
         const { from: cursorPos } = this.view.state.selection.main;
-        debugger;
         if (
             !this.selectedCapId &&
             cursorPos === to
         ) {
+            this.event.preventDefault();
             this.view.dispatch({
                 changes: [
                     { from, to, insert: '1234' },
@@ -56,9 +57,7 @@ export const idToName = EditorView.domEventHandlers({
         if (event.key !== 'Backspace') {
             return;
         }
-
-        event.preventDefault();
         
-        new Visitor(view);
+        new Visitor(view, event);
     },
   });
