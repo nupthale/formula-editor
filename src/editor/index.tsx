@@ -11,7 +11,7 @@ import { nameToId } from './extensions/nameToId';
 import { idToName } from './extensions/idToName';
 import { theme } from './extensions/theme';
 import { editorContext } from './extensions/context';
-import { lintPlugin } from './extensions/lint';
+import { lintPlugin, dispatchError } from './extensions/lint';
 
 import { EditorContext, NodeDescType } from './interface';
 
@@ -38,6 +38,7 @@ export default function Editor({
                 astState,
                 selectedCapIdState,
                 suggest({ onNodeChange, onChange }),
+                
                 capPlugin,
                 nameToId,
                 // idToName监听键盘事件，需要在basicSetup前
@@ -54,10 +55,17 @@ export default function Editor({
         });
         viewRef.current = view;
 
+        onViewReady(view);
+
         return () => {
             viewRef.current?.destroy();
         };
     }, [editorDiv]);
+
+    const onViewReady = (view: EditorView) => {
+        // 触发一次lint
+        dispatchError(view);
+    };
 
   return <div ref={editorDiv}></div>;
 }

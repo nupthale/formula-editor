@@ -49,14 +49,13 @@ class Visitor extends BaseVisitor<void> {
         const field = this.context.fields.find(field => field.id === node.id);
         if (
             !this.selectedCapId &&
-            cursorPos === to &&
-            field
+            cursorPos === to
         ) {
             this.event.preventDefault();
 
             this.view.dispatch({
                 changes: [
-                    { from, to, insert: field.name },
+                    { from, to, insert: field?.name || '未识别的字段' },
                 ],
             });
         }

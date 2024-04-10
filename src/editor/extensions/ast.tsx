@@ -11,10 +11,11 @@ import { editorContext } from './context';
 const parseDoc = (doc: string, context: EditorContext) => {
     const { ast } = parse(doc);
     const visitor = new Visitor(ast!, context);
+    const errors = visitor.errors;
 
     return {
         ast,
-        errors: visitor.errors,
+        errors,
     };
 }
 
@@ -55,7 +56,7 @@ class Visitor extends BaseVisitor<void> {
 
         if (!field) {
             this.errors.push({
-                range: [from - 1, to + 1],
+                range: [from, to],
                 message: '未识别的字段',
             });
         }

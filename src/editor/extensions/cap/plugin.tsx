@@ -50,7 +50,7 @@ class Visitor extends BaseVisitor<void> {
                     iconSvg: '',
                     description: '未识别的字段',
                 }, node.id === this.selectedCapId),
-                side: 1
+                side: 1,
             });
     
             const [from, to] = node.range;
