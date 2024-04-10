@@ -1,0 +1,106 @@
+import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
+
+import { BaseVisitor } from '../../../language/visitor/base';
+import { NameIdentifier } from '../../../language/AST/NameIdentifier';
+import { astState } from '../ast';
+import { editorContext } from '../context';
+
+import { updateSuffixText, suffixTextState } from './suffixText';
+import { EditorContext } from '../../interface';
+
+class Visitor extends BaseVisitor<void> {
+    public widget: DecorationSet = Decoration.none;
+
+    private context: EditorContext;
+
+    constructor(private view: EditorView, private cursorPos: number) {
+        super();
+
+        const { ast } = this.view.state.field(astState);
+        this.context = this.view.state.field(editorContext);
+
+        if (ast) {
+            this.visitFormula(ast);
+        }
+    }
+
+    private getSuffixText = (prefixText: string) => {
+        const { fields, functions } = this.context;
+        const prefixTextLen = prefixText.length;
+
+        const field = fields.find(field => 
+            field.name.length > prefixTextLen && 
+            field.name.indexOf(prefixText) === 0
+        );
+
+        if (field) {
+            return field.name.slice(prefixTextLen);
+        }
+
+        const func = functions.find(func =>
+            func.name.length > prefixTextLen &&
+            func.name.indexOf(prefixText) === 0
+        )
+
+        if (func) {
+            return func.name.slice(prefixTextLen);
+        }
+    }
+
+    protected visitNameIdentifier = (node: NameIdentifier) => {
+        const [, to] = node.range;
+
+        if (this.cursorPos !== to) {
+            return;
+        }
+
+        const suffixText = this.getSuffixText(node.name);
+
+        if (suffixText) {
+            this.view.dispatch({
+                effects: updateSuffixText.of({
+                    text: suffixText,
+                    pos: to,
+                }),
+            });
+        }
+    }
+}
+
+ /**
+ * 如果光标位于一个name后，则找到可以提示的field和function，
+ * 并生成一个decoration，放在name后
+ * 1. 如果选择了field或者function，则插入文本，去除decoration
+ * 2. 如果按左/右键，则补全当前匹配的字段/函数
+ * 3. 如果blur，则去除decoration
+ * */ 
+// export const autocompleteListener = EditorView.updateListener.of((v) => {
+//     const state = v.state;
+//     const { from, to } = state.selection.main;
+//     if (from !== to) return null;
+
+//     if (v.focusChanged) {
+//         return;
+//     }
+
+//     new Visitor(v.view, from);
+// });
+
+export const autocompleteHandler = EditorView.domEventHandlers({
+    keyup(event, view) {
+        const state = view.state;
+        const { from, to } = state.selection.main;
+        if (from !== to) return;
+        
+        // if (event.key === 'Backspace') {
+        //     return;
+        // }
+        
+        new Visitor(view, from);
+    },
+  });
+
+export const autocomplete = [
+    suffixTextState,
+    autocompleteHandler,
+];

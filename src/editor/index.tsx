@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { basicSetup } from 'codemirror';
 import { EditorView } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
+import { EditorState, EditorSelection } from '@codemirror/state';
 
 import { astState } from './extensions/ast';
 import { selectedCapIdState } from './extensions/cap/selected';
@@ -12,6 +12,7 @@ import { idToName } from './extensions/idToName';
 import { theme } from './extensions/theme';
 import { editorContext } from './extensions/context';
 import { lintPlugin, dispatchError } from './extensions/lint';
+import { autocomplete } from './extensions/autocomplete/index';
 
 import { EditorContext, NodeDescType } from './interface';
 
@@ -44,6 +45,7 @@ export default function Editor({
                 // idToName监听键盘事件，需要在basicSetup前
                 idToName,
                 lintPlugin,
+                autocomplete,
 
                 basicSetup,
             ],

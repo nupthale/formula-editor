@@ -27,5 +27,8 @@ export const theme = EditorView.theme({
   },
   '.cm-errorMark': {
     borderBottom: '1px solid red',
+  },
+  '.cm-inline-autocomplete': {
+    backgroundColor: '#1456f026',
   }
 }, { dark: false })
