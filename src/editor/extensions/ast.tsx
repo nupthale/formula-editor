@@ -26,7 +26,9 @@ class Visitor extends BaseVisitor<void> {
     constructor(private formula: Formula, private context: EditorContext) {
         super();
 
-        this.visitFormula(this.formula);
+        if (this.formula) {
+            this.visitFormula(this.formula);
+        }
     }
 
     private getFieldById = (id: string) => {

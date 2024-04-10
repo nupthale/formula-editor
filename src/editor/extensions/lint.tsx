@@ -11,12 +11,12 @@ const errorFields = StateField.define<DecorationSet>({
       return Decoration.none;
     },
     update(underlines, tr) {
-      underlines = underlines.map(tr.changes)
       for (let e of tr.effects) if (e.is(markError)) {
         underlines = underlines.update({
           add: [errorMark.range(e.value.from, e.value.to)]
         });
       }
+
       return underlines
     },
     provide: f => EditorView.decorations.from(f)
