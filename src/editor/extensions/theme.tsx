@@ -24,5 +24,8 @@ export const theme = EditorView.theme({
   },
   '&.cm-cap--focused .cm-cursorLayer': {
     display: 'none',
+  },
+  '.cm-errorMark': {
+    borderBottom: '1px solid red',
   }
 }, { dark: false })

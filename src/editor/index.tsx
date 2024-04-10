@@ -11,6 +11,7 @@ import { nameToId } from './extensions/nameToId';
 import { idToName } from './extensions/idToName';
 import { theme } from './extensions/theme';
 import { editorContext } from './extensions/context';
+import { lintPlugin } from './extensions/lint';
 
 import { EditorContext, NodeDescType } from './interface';
 
@@ -41,6 +42,7 @@ export default function Editor({
                 nameToId,
                 // idToName监听键盘事件，需要在basicSetup前
                 idToName,
+                lintPlugin,
 
                 basicSetup,
             ],

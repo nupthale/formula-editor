@@ -19,7 +19,7 @@ class Visitor extends BaseVisitor<void> {
     constructor(private view: EditorView, private event: KeyboardEvent) {
         super();
 
-        this.formula = view.state.field(astState)!;
+        this.formula = view.state.field(astState).ast!;
         this.selectedCapId = view.state.field(selectedCapIdState);
         this.context = view.state.field(editorContext);
 
@@ -27,6 +27,10 @@ class Visitor extends BaseVisitor<void> {
     }
 
     protected visitIdentifier = (node: Identifier) => {
+        if (node.callable) {
+            return;
+        }
+
         // 1. 如果当前选中了cap， 则直接删除cap
         const [from, to] = node.range;
         if (

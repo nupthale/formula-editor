@@ -41,12 +41,28 @@ class Visitor extends BaseVisitor<void> {
             const len = this.doc.slice(from, to).trim().length;
             
             this.widgets.push(deco.range(from, from + len));
+        } else {
+            let deco = Decoration.replace({
+                widget: new CapWidget({
+                    id: node.id,
+                    name: '未识别的字段',
+                    type: 'unknown',
+                    iconSvg: '',
+                    description: '未识别的字段',
+                }, node.id === this.selectedCapId),
+                side: 1
+            });
+    
+            const [from, to] = node.range;
+            const len = this.doc.slice(from, to).trim().length;
+            
+            this.widgets.push(deco.range(from, from + len));
         }
     }
 }
 
 const idToCaps = (view: EditorView) => {
-    const ast = view.state.field(astState);
+    const { ast } = view.state.field(astState);
     const context = view.state.field(editorContext);
     const doc = view.state.doc.toString();
     const selectedCapId = view.state.field(selectedCapIdState);

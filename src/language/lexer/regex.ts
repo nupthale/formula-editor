@@ -11,7 +11,7 @@
  */
 // chevrotain不支持unicode的正则，如果要使用，需要在自定义pattern内自己实现
 // export const functionNameRegex = /([\p{L}_]+)(?=\s*[(\uFF08])/iu;
-export const functionNameRegex = /([a-zA-Z_]+)(?=\s*[(\uFF08])/i;
+export const functionNameRegex = /([a-zA-Z_0-9]+)(?=\s*[(\uFF08])/i;
 
 /**
  * 正则元素， [开始， ]结束

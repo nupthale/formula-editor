@@ -19,7 +19,7 @@ export class CapWidget extends WidgetType {
     text.innerText = this.field.name;
 
     let icon = wrap.appendChild(document.createElement('span'));
-    icon.innerHTML = this.field.iconSvg;
+    icon.innerHTML = this.field.iconSvg || '';
 
     return wrap
   }

@@ -9,8 +9,8 @@ export type FieldType = {
     id: string;
     name: string;
     type: string;
-    iconSvg: string;
-    category: string;
+    iconSvg?: string;
+    category?: string;
     description: string;
 };
 
@@ -30,4 +30,9 @@ export type FunctionType = {
 export type EditorContext = {
     fields: FieldType[];
     functions: FunctionType[];
+};
+
+export type LintErrorType = {
+    range: [number, number];
+    message: string;
 };

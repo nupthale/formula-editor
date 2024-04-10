@@ -37,7 +37,7 @@ class Visitor extends BaseVisitor<void> {
     constructor(private view: EditorView, private event: KeyboardEvent) {
         super();
 
-        this.formula = view.state.field(astState)!;
+        this.formula = view.state.field(astState).ast!;
 
         this.visitFormula(this.formula);
     }

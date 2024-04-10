@@ -24,7 +24,7 @@ import './App.css'
 // const json = errors?.length ? { errors } : astJson;
 
 function App() {
-  const [doc, setDoc] = useState('$$sum(1 + 1) + abc + $$[1:number]');
+  const [doc, setDoc] = useState('$$sum1(1 + 1) + abc + $$[1:number] + $$[31:number]');
   // 当前ast node
   const [node, setNode] = useState<NodeDescType | null>(null);
 

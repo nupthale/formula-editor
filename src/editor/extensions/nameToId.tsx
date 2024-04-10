@@ -16,7 +16,7 @@ class Visitor extends BaseVisitor<void> {
 
         const state = viewUpdate.state;
 
-        const ast = state.field(astState);
+        const ast = state.field(astState).ast;
         this.context = state.field(editorContext);
 
         if (ast) this.visit(ast);

@@ -20,7 +20,7 @@ class NodeVisitor extends BaseVisitor<void> {
         if (from !== to) return null;
 
         const visitor = new NodeVisitor(from);
-        const ast = state.field(astState);
+        const ast = state.field(astState).ast;
 
         if (ast) visitor.visit(ast);
         return visitor.node;
