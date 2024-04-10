@@ -7,8 +7,7 @@ import { Identifier } from '../../../language/AST/Identifier';
 import { astState } from '../ast';
 import { editorContext } from '../context';
 
-import { selectCap } from './selected';
-import { selectedCapIdState } from './selected';
+import { selectCap, selectedCapIdState, selectCapByCursorPos } from './selected';
 
 import { CapWidget } from './widget';
 import { EditorContext } from '../../interface';
@@ -99,4 +98,5 @@ export const capFocusAttributes = EditorView.editorAttributes.of(v => {
 export const capPlugin = [
     capDecoration,
     capFocusAttributes,
+    selectCapByCursorPos,
 ]; 

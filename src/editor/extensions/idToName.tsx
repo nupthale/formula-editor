@@ -5,10 +5,14 @@ import { Identifier } from '../../language/AST/Identifier';
 
 import { selectedCapIdState, selectCap } from './cap/selected';
 import { astState } from './ast';
+import { editorContext } from './context';
 import { Formula } from '../../language/AST/Formula';
+import { EditorContext } from '../interface';
 
 class Visitor extends BaseVisitor<void> {
     private formula: Formula;
+
+    private context: EditorContext;
 
     private selectedCapId: string | undefined;
 
@@ -17,6 +21,7 @@ class Visitor extends BaseVisitor<void> {
 
         this.formula = view.state.field(astState)!;
         this.selectedCapId = view.state.field(selectedCapIdState);
+        this.context = view.state.field(editorContext);
 
         this.visitFormula(this.formula);
     }
@@ -37,14 +42,17 @@ class Visitor extends BaseVisitor<void> {
 
         // 2. 如果光标在cap后，此时输入删除，则idToName
         const { from: cursorPos } = this.view.state.selection.main;
+        const field = this.context.fields.find(field => field.id === node.id);
         if (
             !this.selectedCapId &&
-            cursorPos === to
+            cursorPos === to &&
+            field
         ) {
             this.event.preventDefault();
+
             this.view.dispatch({
                 changes: [
-                    { from, to, insert: '1234' },
+                    { from, to, insert: field.name },
                 ],
             });
         }
