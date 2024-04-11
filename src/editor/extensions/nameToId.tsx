@@ -38,6 +38,8 @@ class Visitor extends BaseVisitor<void> {
             (this.pos > to + 1) ||
             (this.pos < from - 1)
         ) {
+
+            
             this.view.dispatch({
                 changes: { from, to, insert: `\$\$[${field.id}:${field.type}]` },
             })

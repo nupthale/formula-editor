@@ -5,7 +5,7 @@ import { NameIdentifier } from '../../../language/AST/NameIdentifier';
 import { astState } from '../ast';
 import { editorContext } from '../context';
 
-import { updateSuffixText, suffixTextState } from './suffixText';
+import { updateSuffixText, suffixTextState, suffixTextDecorationState } from './suffixText';
 import { EditorContext } from '../../interface';
 
 class Visitor extends BaseVisitor<void> {
@@ -13,7 +13,11 @@ class Visitor extends BaseVisitor<void> {
 
     private context: EditorContext;
 
-    constructor(private view: EditorView, private cursorPos: number) {
+    constructor(
+        private view: EditorView, 
+        private cursorPos: number,
+        private event: KeyboardEvent,
+    ) {
         super();
 
         const { ast } = this.view.state.field(astState);
@@ -74,33 +78,76 @@ class Visitor extends BaseVisitor<void> {
  * 2. 如果按左/右键，则补全当前匹配的字段/函数
  * 3. 如果blur，则去除decoration
  * */ 
-// export const autocompleteListener = EditorView.updateListener.of((v) => {
-//     const state = v.state;
-//     const { from, to } = state.selection.main;
-//     if (from !== to) return null;
-
-//     if (v.focusChanged) {
-//         return;
-//     }
-
-//     new Visitor(v.view, from);
-// });
-
 export const autocompleteHandler = EditorView.domEventHandlers({
     keyup(event, view) {
         const state = view.state;
         const { from, to } = state.selection.main;
+ 
+        if (from !== to) return;
+
+        if (event.key === 'Backspace') {
+            return;
+        }
+
+        new Visitor(view, from, event);
+    },
+    
+    keydown(event, view) {
+        const state = view.state;
+        const { from, to } = state.selection.main;
+ 
         if (from !== to) return;
         
-        // if (event.key === 'Backspace') {
-        //     return;
-        // }
+        const context = view.state.field(editorContext);
+        const suffixText = view.state.field(suffixTextState);
+
+        if (suffixText === null) {
+            return;
+        }
+
+        const { text, pos } = suffixText;
+        const destPos = pos + text.length;
+        const selection = { head: destPos, anchor: destPos };
         
-        new Visitor(view, from);
+        switch(event.key) {
+            case 'Backspace':
+                event.preventDefault();
+
+                view.dispatch({
+                    effects: updateSuffixText.of(null),
+                });
+
+                break;
+
+            case 'ArrowLeft':
+                view.dispatch({
+                    effects: updateSuffixText.of(null),
+                    changes: [{
+                        from: pos,
+                        insert: text,
+                    }],
+                });
+
+                break;    
+            case 'ArrowRight':
+                event.preventDefault();
+                // 如果要变胶囊，需要加个visitor，把对应name直接替换为id触发后续idToName即可
+                view.dispatch({
+                    effects: updateSuffixText.of(null),
+                    changes: [{
+                        from: pos,
+                        insert: text,
+                    }],
+                    selection,
+                });
+
+                break;        
+        }
     },
   });
 
 export const autocomplete = [
     suffixTextState,
+    suffixTextDecorationState,
     autocompleteHandler,
 ];
