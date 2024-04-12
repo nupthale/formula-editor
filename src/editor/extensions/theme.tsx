@@ -30,5 +30,8 @@ export const theme = EditorView.theme({
   },
   '.cm-inline-autocomplete': {
     backgroundColor: '#1456f026',
+  },
+  '.cm-activeLine': {
+    backgroundColor: 'transparent',
   }
 }, { dark: false })
