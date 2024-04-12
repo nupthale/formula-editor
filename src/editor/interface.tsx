@@ -12,6 +12,9 @@ export type FieldType = {
     iconSvg?: string;
     category?: string;
     description: string;
+
+    // editor暂未支持多级对象
+    chidlren?: FieldType[];
 };
 
 export type FunctionParamType = {

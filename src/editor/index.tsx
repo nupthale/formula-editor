@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { basicSetup } from 'codemirror';
 import { EditorView } from '@codemirror/view';
-import { EditorState, EditorSelection } from '@codemirror/state';
+import { EditorState } from '@codemirror/state';
 
 import { astState } from './extensions/ast';
 import { selectedCapIdState } from './extensions/cap/selected';
