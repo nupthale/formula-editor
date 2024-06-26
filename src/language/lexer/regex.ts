@@ -25,7 +25,7 @@ export const functionNameRegex = /([a-zA-Z_0-9]+)(?=\s*[(\uFF08])/i;
  * 匹配 [abc] [] [\\]] [\\]等
  * 不匹配 [\] 
  */
-export const quotedFragment = String.raw`\[(?:(?!\$\$\[.*\]|\n).)*\]`;
+export const quotedFragment = String.raw`\[(?:(?!\]|\n).)*\]`;
 
 // 允许： 除]和换行符外的字符
 export const quotedNameReferenceRegex = RegExp(`${quotedFragment}`, 'i');
