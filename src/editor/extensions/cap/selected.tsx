@@ -46,6 +46,10 @@ class Visitor extends BaseVisitor<void> {
         const { from: cusorPos } = this.view.state.selection.main;
         const [from, to] = node.range;
 
+        if (node.callable) {
+            return;
+        }
+
         if (
             cusorPos === from && this.event.key === 'ArrowRight'
         ) {

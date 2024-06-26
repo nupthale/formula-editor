@@ -13,6 +13,10 @@ export class NameIdentifier extends ASTNode {
         this.addParent();
     }
 
+    get isEscape() {
+        return this.nameToken.tokenType.name === EscapeName.name;
+    }
+
     get name() {
         const image = this.nameToken.image;
 

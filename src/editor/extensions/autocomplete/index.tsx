@@ -52,9 +52,11 @@ class Visitor extends BaseVisitor<void> {
     }
 
     protected visitNameIdentifier = (node: NameIdentifier) => {
-        const [, to] = node.range;
+        const [from, to] = node.range;
+        const fromPos = node.isEscape ? from + 1 : from;
+        const endPos = fromPos + node.name.length;
 
-        if (this.cursorPos !== to) {
+        if (this.cursorPos !== endPos || from > to) {
             return;
         }
 
@@ -64,7 +66,7 @@ class Visitor extends BaseVisitor<void> {
             this.view.dispatch({
                 effects: updateSuffixText.of({
                     text: suffixText,
-                    pos: to,
+                    pos: endPos,
                 }),
             });
         }
@@ -101,6 +103,7 @@ export const autocompleteHandler = EditorView.domEventHandlers({
         const context = view.state.field(editorContext);
         const suffixText = view.state.field(suffixTextState);
 
+        debugger;
         if (suffixText === null) {
             return;
         }
@@ -110,6 +113,12 @@ export const autocompleteHandler = EditorView.domEventHandlers({
         const selection = { head: destPos, anchor: destPos };
         
         switch(event.key) {
+            case ' ':
+                view.dispatch({
+                    effects: updateSuffixText.of(null),
+                });
+
+                break;
             case 'Backspace':
                 event.preventDefault();
 
@@ -118,7 +127,6 @@ export const autocompleteHandler = EditorView.domEventHandlers({
                 });
 
                 break;
-
             case 'ArrowLeft':
                 view.dispatch({
                     effects: updateSuffixText.of(null),
@@ -141,7 +149,13 @@ export const autocompleteHandler = EditorView.domEventHandlers({
                     selection,
                 });
 
-                break;        
+                break;  
+            default:
+                view.dispatch({
+                    effects: updateSuffixText.of(null),
+                });
+
+                break;          
         }
     },
   });

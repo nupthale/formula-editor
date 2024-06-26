@@ -35,11 +35,9 @@ class Visitor extends BaseVisitor<void> {
         }
 
         if (
-            (this.pos > to + 1) ||
-            (this.pos < from - 1)
-        ) {
-
-            
+            (this.pos > to) ||
+            (this.pos < from)
+        ) {   
             this.view.dispatch({
                 changes: { from, to, insert: `\$\$[${field.id}:${field.type}]` },
             })

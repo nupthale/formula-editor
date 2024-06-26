@@ -8,11 +8,13 @@ const tokenize = (text: string) => {
     const tokens = lexingResult.tokens;
 
     return tokens.map((token, index) => {
-        if (index === tokens.length - 1) {
-            token.endOffset = text.length;
-        } else {
-            token.endOffset = token.startOffset + token.image.length;
-        }
+        // if (index === tokens.length - 1) {
+        //     token.endOffset = text.length;
+        // } else {
+        //     token.endOffset = token.startOffset + token.image.length;
+        // }
+
+        token.endOffset = token.startOffset + token.image.length;
 
         return token;
     });
