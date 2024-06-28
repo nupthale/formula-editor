@@ -1,29 +1,29 @@
 import { useMemo } from 'react';
 
-import { FieldType, NodeDescType } from '../editor/interface';
-import { Identifier } from '../language/AST/Identifier';
-import { NameIdentifier } from '../language/AST/NameIdentifier';
-import { CallExpression } from '../language/AST/CallExpression';
-import { MemberExpression } from '../language/AST/MemberExpression';
+import { FieldType, NodeDescType, EditorContext } from '../../editorInput/interface';
+import { Identifier } from '../../language/AST/Identifier';
+import { NameIdentifier } from '../../language/AST/NameIdentifier';
+import { CallExpression } from '../../language/AST/CallExpression';
+import { MemberExpression } from '../../language/AST/MemberExpression';
 
-import { editorContext } from '../context';
-
-export const useNodeDesc = ({ node }: { node: NodeDescType | null }) => {
+export const useNodeDesc = ({ node, context }: { node: NodeDescType | null, context: EditorContext }) => {
     const renderFunction = (id: string, argIndex?: number) => {
-        const functionItem = editorContext.functions.find(item => item.name === id);
+        const functionItem = context.functions.find(item => item.name === id);
 
         if (!functionItem) {
             return <div>未识别的函数</div>
         }
 
         return (
-            <div className="flex">
-                <div>{functionItem.name}</div>
+            <div className="flex items-center">
+                <div className="formula-editor-nodeDesc__functionName mr-0.5">{functionItem.name?.toUpperCase()}</div>
                 <div>(</div>
                 {
                     functionItem.params.map((param, index) => (
                         <div className="flex">
-                            <div className={`nodeDesc__functionParam ${index === argIndex ? 'nodeDesc__functionParam--selected' : ''}`}>{param.name}</div>
+                            <div className={`formula-editor-nodeDesc__functionParam ${index === argIndex ? 'formula-editor-nodeDesc__functionParam--selected' : ''}`}>
+                                <div className="relative">{param.name}</div>
+                            </div>
                             {
                                 index === functionItem.params.length - 1 ? '' : ','
                             }
@@ -34,7 +34,9 @@ export const useNodeDesc = ({ node }: { node: NodeDescType | null }) => {
                     !functionItem.fixedParamsLen ? (
                         <div className="flex">
                             <div>,</div>
-                            <div className={`nodeDesc__functionParam ${argIndex && argIndex >= functionItem.params.length ? 'nodeDesc__functionParam--selected' : ''}`}>...value</div>
+                            <div className={`formula-editor-nodeDesc__functionParam ${argIndex && argIndex >= functionItem.params.length ? 'formula-editor-nodeDesc__functionParam--selected' : ''}`}>
+                                <div className="relative">...其余的值</div>
+                            </div>
                         </div>
                     ) : ''
                 }
@@ -84,13 +86,13 @@ export const useNodeDesc = ({ node }: { node: NodeDescType | null }) => {
         }
         
         if (raw instanceof Identifier) {
-            const field = editorContext.fields.find(item => item.id === raw.id);
+            const field = context.fields.find(item => item.id === raw.id);
 
             return renderField(field);
         }
         
         if (raw instanceof NameIdentifier) {
-            const field = editorContext.fields.find(item => item.name === raw.name);
+            const field = context.fields.find(item => item.name === raw.name);
 
             return renderField(field);
         }

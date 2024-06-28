@@ -1,0 +1,51 @@
+.formula-editor {
+    overflow: hidden;
+    min-height: 200px;
+    border: 1px solid #d0d3d6;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+
+    &__head {
+        padding: 12px 0;
+    }
+
+    &__body {
+        flex: 1;
+        background: #f5f6f7;
+    }
+
+    /* 提示区 */
+    &__info {
+        border-top: 1px solid #1f232926;
+        font-size: 14px;
+        padding: 12px 16px;
+    }
+}
+
+.formula-editor-nodeDesc {
+    &__functionName {
+        font-weight: 500;
+    }
+
+    &__functionParam {
+        position: relative;
+        padding: 1px 2px;
+        color: #8f959e;
+
+        &--selected {
+            color: #1f2329;
+        }
+
+        &--selected:before {
+            content: '';
+            position: absolute;
+            left: 2px; 
+            top: 4px;
+            width: calc(100% - 4px);
+            height: calc(100% - 6px);
+            background: #fcdf7e;
+            border-radius: 2px;
+        }
+    }
+}

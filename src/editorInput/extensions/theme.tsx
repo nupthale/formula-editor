@@ -5,6 +5,9 @@ export const theme = EditorView.theme({
     color: '#212121',
     backgroundColor: '#fff'
   },
+  '&.cm-focused': {
+    outline: 'none',
+  },
   '.cm-id-cap': {
     display: 'inline-flex',
     alignItems: 'center',
@@ -33,5 +36,13 @@ export const theme = EditorView.theme({
   },
   '.cm-activeLine': {
     backgroundColor: 'transparent',
+  },
+  '.cm-line': {
+    padding: '0 16px',
+  },
+  '.cm-matchingBracket': {
+    borderRadius: '4px',
+    fontWeight: '600',
+    background: '#fcdf7e!important',
   }
 }, { dark: false })

@@ -33,7 +33,7 @@ export const editorContext: EditorContext = {
     functions: [{
         name: 'sum',
         params: [{
-            name: 'value1',
+            name: '值1',
             type: 'number',
             description: '第一个参数，数字类型',
         }, {

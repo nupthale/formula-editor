@@ -103,7 +103,6 @@ export const autocompleteHandler = EditorView.domEventHandlers({
         const context = view.state.field(editorContext);
         const suffixText = view.state.field(suffixTextState);
 
-        debugger;
         if (suffixText === null) {
             return;
         }

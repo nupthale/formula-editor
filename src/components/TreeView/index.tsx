@@ -183,10 +183,17 @@ const toTreeData = (json: Formula) => {
     return data;
 }   
 
+
 export const TreeView = ({ formula }: { formula: Formula }) => {
     const data = useMemo(() => {
         return toTreeData(formula);
     }, [formula]);
 
-    return <Tree data={data} orientation='vertical' translate={{ x: 300, y: 80 }}></Tree>;
+    const bodyRect = document.body.getBoundingClientRect();
+    const dimensions = {
+        width: bodyRect.width / 3,
+        height: bodyRect.height,
+    };
+
+    return <Tree data={data} orientation='vertical' dimensions={dimensions} translate={{ x: dimensions.width / 2, y: 80 }}></Tree>;
 }
