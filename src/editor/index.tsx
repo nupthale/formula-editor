@@ -58,7 +58,6 @@ export default function Editor({
                             <div className="formula-editor-suggest__list">
                                 <SuggestList fields={suggestInfo.fields} functions={suggestInfo.functions} />
                             </div>
-                            <div className="formula-editor-suggest__info"></div>
                         </div>
                     ) : ''
                 }

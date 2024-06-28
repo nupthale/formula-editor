@@ -18,7 +18,7 @@ export default function SuggestList({
                 className="flex items-center justify-between"
                 onMouseOver={() => setSelectedItem(item)}
             >
-                <div className="flex items-center">
+                <div className="flex items-center pl-1">
                     <span dangerouslySetInnerHTML={{ __html: item.iconSvg || '' }} className="mr-2"></span>
                     {item.name}
                 </div>
@@ -47,7 +47,7 @@ export default function SuggestList({
     }
 
     return (
-        <div>
+        <div className="flex flex-col gap-2">
             {
                 fields.length ? (
                     <div>

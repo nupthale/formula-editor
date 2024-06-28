@@ -3,7 +3,7 @@ import { EditorContext } from './editorInput/interface';
 export const editorContext: EditorContext = {
     fields: [{
         id: '1',
-        name: '项目',
+        name: '项目su',
         type: 'string',
         iconSvg: '<?xml version="1.0" encoding="UTF-8"?><svg width="12" height="12" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 42L8.94118 30M32 42L27.0588 30M27.0588 30L25 25L18 8L11 25L8.94118 30M27.0588 30H8.94118" stroke="#BFBE99" stroke-width="4" stroke-linecap="round" stroke-linejoin="miter"/><path d="M28 10L44 10" stroke="#BFBE99" stroke-width="4" stroke-linecap="round" stroke-linejoin="miter"/><path d="M32 20L44 20" stroke="#BFBE99" stroke-width="4" stroke-linecap="round" stroke-linejoin="miter"/><path d="M36 30L44 30" stroke="#BFBE99" stroke-width="4" stroke-linecap="round" stroke-linejoin="miter"/><path d="M40 40H44" stroke="#BFBE99" stroke-width="4" stroke-linecap="round" stroke-linejoin="miter"/></svg>',
         category: '组1',
