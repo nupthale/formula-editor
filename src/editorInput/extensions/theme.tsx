@@ -3,7 +3,7 @@ import { EditorView } from '@codemirror/view';
 export const theme = EditorView.theme({
   '&': {
     color: '#212121',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   '&.cm-focused': {
     outline: 'none',
@@ -12,6 +12,7 @@ export const theme = EditorView.theme({
     display: 'inline-flex',
     alignItems: 'center',
     color: '#187b34',
+    height: '24px',
     backgroundColor: '#187b341a',
     border: '1px solid #187b3420',
     borderRadius: '8px',
@@ -39,6 +40,7 @@ export const theme = EditorView.theme({
   },
   '.cm-line': {
     padding: '0 16px',
+    lineHeight: '26px',
   },
   '.cm-matchingBracket': {
     borderRadius: '4px',

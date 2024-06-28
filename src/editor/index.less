@@ -1,6 +1,5 @@
 .formula-editor {
     overflow: hidden;
-    min-height: 200px;
     border: 1px solid #d0d3d6;
     border-radius: 12px;
     display: flex;
@@ -15,6 +14,16 @@
         flex-direction: column;
         flex: 1;
         background: #f5f6f7;
+    }
+
+    &__footer {
+        height: 50px;
+        padding: 16px;
+        background: #f5f6f7;
+        border-top: 1px solid #1f232926;
+
+        font-size: 12px;
+        color: #646a73;
     }
 
     /* 提示区 */
@@ -60,14 +69,51 @@
     flex: 1;
     display: flex;
     border-top: 1px solid #1f232926;
+    font-size: 14px;
 
     &__list {
         width: 200px;
+        padding: 8px 4px;
         border-right: 1px solid #1f232926;
     }
 
     &__info {
         flex: 1;
         padding: 16px;
+    }
+
+    &__item {
+        height: 32px;
+        line-height: 32px;
+        padding: 0 8px;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &--selected {
+            background: #1456f026;
+            color: #336df4;
+
+            .formula-editor-suggest__tabIcon {
+                opacity: 1;
+            }
+        }
+    }
+
+    &__tabIcon {
+        opacity: 0;
+        font-size: 12px;
+        border-radius: 5px;
+        padding: 0 3px;
+        color: #646a73;
+        height: 20px;
+        line-height: 20px;
+        border: 1px solid #1f232926;
+    }
+
+    &__title {
+        height: 32px;
+        line-height: 32px;
+        padding: 0 8px;
+        color: #8f959e;
     }
 }

@@ -7,6 +7,7 @@ import { basicSetup } from './basicSetup';
 import { astState } from './extensions/ast';
 import { selectedCapIdState } from './extensions/cap/selected';
 import { suggest } from './extensions/suggest';
+
 import { capPlugin } from './extensions/cap/plugin';
 import { nameToId } from './extensions/nameToId';
 import { idToName } from './extensions/idToName';
@@ -14,6 +15,7 @@ import { theme } from './extensions/theme';
 import { editorContext } from './extensions/context';
 import { lintPlugin, dispatchError } from './extensions/lint';
 import { autocomplete } from './extensions/autocomplete/index';
+import { updateListener } from './extensions/updateListener';
 
 import { EditorContext, NodeDescType } from './interface';
 
@@ -22,11 +24,13 @@ export default function EditorInput({
     defaultDoc, 
     onChange,
     onNodeChange,
+    onCursorChange,
 }: { 
     context: EditorContext,
     defaultDoc: string, 
     onChange: (doc: string) => void,
     onNodeChange: (node: NodeDescType | null) => void,
+    onCursorChange: (pos: number) => void,
 }) {
     const editorDiv = useRef<HTMLDivElement>(null);
     const viewRef = useRef<EditorView>();
@@ -36,11 +40,12 @@ export default function EditorInput({
             doc: defaultDoc,
             extensions: [
                 theme,
+                EditorView.lineWrapping,
                 editorContext.init(() => context),
                 astState,
                 selectedCapIdState,
-                suggest({ onNodeChange, onChange }),
-                
+                suggest({ onNodeChange }),
+
                 capPlugin,
                 nameToId,
                 // idToName监听键盘事件，需要在basicSetup前
@@ -48,6 +53,7 @@ export default function EditorInput({
                 lintPlugin,
                 autocomplete,
 
+                updateListener({ onChange, onCursorChange }),
                 basicSetup,
             ],
         });

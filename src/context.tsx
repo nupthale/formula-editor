@@ -1,4 +1,4 @@
-import { EditorContext } from './editor/interface';
+import { EditorContext } from './editorInput/interface';
 
 export const editorContext: EditorContext = {
     fields: [{

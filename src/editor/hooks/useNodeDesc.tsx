@@ -45,9 +45,9 @@ export const useNodeDesc = ({ node, context }: { node: NodeDescType | null, cont
         );
     }
 
-    const renderField = (field?: FieldType) => {
+    const renderField = (field?: FieldType, showIfUnrecognized: boolean = false) => {
         if (!field) {
-            return <div>未识别的字段</div>
+            return showIfUnrecognized ? <div>未识别的字段</div> : '';
         }
 
         return (
@@ -89,7 +89,7 @@ export const useNodeDesc = ({ node, context }: { node: NodeDescType | null, cont
         if (raw instanceof Identifier) {
             const field = context.fields.find(item => item.id === raw.id);
 
-            return renderField(field);
+            return renderField(field, true);
         }
         
         if (raw instanceof NameIdentifier) {

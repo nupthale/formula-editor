@@ -105,16 +105,10 @@ class NodeVisitor extends BaseVisitor<void> {
 }
 
 export const suggest = ({
-    onChange,
     onNodeChange,
 }: {
-    onChange: (doc: string) => void,
     onNodeChange: (node: NodeDescType | null) => void,
 }) => EditorView.updateListener.of((v) => {
-    if (v.docChanged) {
-        onChange(v.state.doc.toString());
-    }
-
     // cursor change
     onNodeChange(NodeVisitor.getNodeByPos(v.state));
 });
