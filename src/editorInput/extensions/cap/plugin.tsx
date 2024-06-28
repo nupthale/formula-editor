@@ -106,6 +106,8 @@ export const capDecoration = ViewPlugin.fromClass(
 export const capFocusAttributes = EditorView.editorAttributes.of(v => {
     const selectedCapId = v.state.field(selectedCapIdState);
 
+    console.info('#selectedCapId', selectedCapId);
+
     return {
         class: selectedCapId ? 'cm-cap--focused' : '',
     }

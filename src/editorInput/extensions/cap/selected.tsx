@@ -50,28 +50,46 @@ class Visitor extends BaseVisitor<void> {
             return;
         }
 
+        // 如果当前是选中状态，则需要跳过一个cap的距离
+        const selectedId = this.view.state.field(selectedCapIdState);
+
         if (
             cusorPos === from && this.event.key === 'ArrowRight'
         ) {
             this.event.preventDefault();
-            this.view.dispatch({
-                selection: {
-                    head: to,
-                    anchor: to,
-                },
-                effects: selectCap.of(node.id),
-            });
+
+            if (selectedId) {
+                this.view.dispatch({
+                    selection: {
+                        head: to,
+                        anchor: to,
+                    },
+                    effects: selectCap.of(undefined),
+                });
+            } else {
+                this.view.dispatch({
+                    effects: selectCap.of(node.id),
+                });
+            }
+            
         } else if (
             cusorPos === to && this.event.key === 'ArrowLeft' 
         ) {
             this.event.preventDefault();
-            this.view.dispatch({
-                selection: {
-                    head: from + 1,
-                    anchor: from + 1,
-                },
-                effects: selectCap.of(node.id),
-            });
+            
+            if (selectedId) {
+                this.view.dispatch({
+                    selection: {
+                        head: from,
+                        anchor: from,
+                    },
+                    effects: selectCap.of(undefined),
+                });
+            } else {
+                this.view.dispatch({
+                    effects: selectCap.of(node.id),
+                });
+            }
         }
     }
 }
@@ -84,12 +102,6 @@ export const selectCapByCursorPos = EditorView.domEventHandlers({
             return;
         }
 
-        if (view.state.field(selectedCapIdState)) {
-            view.dispatch({
-                effects: selectCap.of(undefined),
-            });
-        } else {
-            new Visitor(view, event);
-        }
+        new Visitor(view, event);
     },
   });

@@ -32,6 +32,7 @@ export default function Editor({
         <div className="formula-editor">
             {/* 编辑区 */}
             <div className="formula-editor__head">
+                cursorPos: {cursorPos}
                 <EditorInput 
                     context={context} 
                     defaultDoc={defaultDoc} 
