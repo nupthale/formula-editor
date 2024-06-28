@@ -16,7 +16,7 @@ export const useNodeDesc = ({ node, context }: { node: NodeDescType | null, cont
 
         return (
             <div className="flex items-center">
-                <div className="formula-editor-nodeDesc__functionName mr-0.5">{functionItem.name?.toUpperCase()}</div>
+                <div className="formula-editor-nodeDesc__identifier mr-0.5">{functionItem.name?.toUpperCase()}</div>
                 <div>(</div>
                 {
                     functionItem.params.map((param, index) => (
@@ -51,8 +51,9 @@ export const useNodeDesc = ({ node, context }: { node: NodeDescType | null, cont
         }
 
         return (
-            <div className="flex">
-                <div>{field.name} - {field.description}</div>
+            <div className="flex flex-col">
+                <div className="formula-editor-nodeDesc__identifier">{field.name}</div>
+                <div className="formula-editor-nodeDesc__description mt-1">{field.description}</div>
             </div>
         );
     }

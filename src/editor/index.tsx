@@ -4,6 +4,7 @@ import { EditorContext, NodeDescType } from '../editorInput/interface';
 import EditorInput from '../editorInput';
 
 import { useNodeDesc } from './hooks/useNodeDesc';
+import { Identifier } from '../language/AST/Identifier';
 
 export default function Editor({
     defaultDoc,
@@ -27,11 +28,21 @@ export default function Editor({
             </div>
 
             <div className="formula-editor__body">
-                {/* 提示区 */}
+                {/* 函数、引用提示 */}
                 {
                     nodeDesc && (
-                        <div className="formula-editor__info">
+                        <div className="formula-editor-info">
                             {nodeDesc}
+                        </div>
+                    )
+                }
+
+                {/* 函数、引用suggest */}
+                {
+                    node?.raw instanceof Identifier && (
+                        <div className="formula-editor-suggest">
+                            <div className="formula-editor-suggest__list"></div>
+                            <div className="formula-editor-suggest__info"></div>
                         </div>
                     )
                 }
