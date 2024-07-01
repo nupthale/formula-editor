@@ -5,6 +5,7 @@ import { BaseVisitor } from '../../../language/visitor/base';
 import { Formula } from '../../../language/AST/Formula';
 import { Identifier } from '../../../language/AST/Identifier';
 import { astState } from '../ast';
+import { capId } from './id';
 
 // 点击选中
 export const selectCap = StateEffect.define<string | undefined>({
@@ -68,7 +69,7 @@ class Visitor extends BaseVisitor<void> {
                 });
             } else {
                 this.view.dispatch({
-                    effects: selectCap.of(node.id),
+                    effects: selectCap.of(capId(node)),
                 });
             }
             
@@ -87,7 +88,7 @@ class Visitor extends BaseVisitor<void> {
                 });
             } else {
                 this.view.dispatch({
-                    effects: selectCap.of(node.id),
+                    effects: selectCap.of(capId(node)),
                 });
             }
         }

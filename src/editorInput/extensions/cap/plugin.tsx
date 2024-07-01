@@ -8,6 +8,7 @@ import { astState } from '../ast';
 import { editorContext } from '../context';
 
 import { selectCap, selectedCapIdState, selectCapByCursorPos } from './selected';
+import { capId } from './id';
 
 import { CapWidget } from './widget';
 import { EditorContext } from '../../interface';
@@ -30,10 +31,15 @@ class Visitor extends BaseVisitor<void> {
         }
 
         const field = this.getFieldById(node.id);
+        const id = capId(node);
 
         if (field) {
             let deco = Decoration.replace({
-                widget: new CapWidget(field, node.id === this.selectedCapId),
+                widget: new CapWidget(
+                    id,
+                    field, 
+                    id === this.selectedCapId,
+                ),
                 side: 1
             });
     
@@ -43,13 +49,17 @@ class Visitor extends BaseVisitor<void> {
             this.widgets.push(deco.range(from, from + len));
         } else {
             let deco = Decoration.replace({
-                widget: new CapWidget({
-                    id: node.id,
-                    name: '未识别的字段',
-                    type: 'unknown',
-                    iconSvg: '',
-                    description: '未识别的字段',
-                }, node.id === this.selectedCapId),
+                widget: new CapWidget(
+                    id,
+                    {
+                        id: id,
+                        name: '未识别的字段',
+                        type: 'unknown',
+                        iconSvg: '',
+                        description: '未识别的字段',
+                    }, 
+                    id === this.selectedCapId
+                ),
                 side: 1,
             });
     
@@ -105,8 +115,6 @@ export const capDecoration = ViewPlugin.fromClass(
 
 export const capFocusAttributes = EditorView.editorAttributes.of(v => {
     const selectedCapId = v.state.field(selectedCapIdState);
-
-    console.info('#selectedCapId', selectedCapId);
 
     return {
         class: selectedCapId ? 'cm-cap--focused' : '',

@@ -8,6 +8,8 @@ import { astState } from './ast';
 import { editorContext } from './context';
 import { Formula } from '../../language/AST/Formula';
 import { EditorContext } from '../interface';
+import { capId } from './cap/id';
+
 
 class Visitor extends BaseVisitor<void> {
     private formula: Formula;
@@ -35,7 +37,7 @@ class Visitor extends BaseVisitor<void> {
         const [from, to] = node.range;
         if (
             this.selectedCapId &&
-            node.id === this.selectedCapId
+            capId(node) === this.selectedCapId
         ) {
             this.event.preventDefault();
             this.view.dispatch({
