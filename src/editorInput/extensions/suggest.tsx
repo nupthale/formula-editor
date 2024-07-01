@@ -14,7 +14,7 @@ import { astState } from './ast';
 
 import { NodeDescType } from '../interface';
 
-class NodeVisitor extends BaseVisitor<void> {
+export class NodeVisitor extends BaseVisitor<void> {
     static getNodeByPos = (state: EditorState) => {
         const { from, to } = state.selection.main;
         if (from !== to) return null;
@@ -110,7 +110,7 @@ export const suggest = ({
     onNodeChange: (node: NodeDescType | null) => void,
 }) => EditorView.updateListener.of((v) => {
     // 如果光标没变化， 则不触发cursor change
-    if (!v.selectionSet) {
+    if (!v.docChanged && !v.selectionSet) {
         return;
     }
 

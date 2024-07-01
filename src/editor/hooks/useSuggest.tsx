@@ -58,6 +58,7 @@ export const useSuggest = ({
     const suggestInfo = useMemo(() => {
         if (!node || !(node?.raw instanceof NameIdentifier)) {
             return {
+                matches: false,
                 fields: [],
                 functions: [],
             }
