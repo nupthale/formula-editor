@@ -24,6 +24,7 @@ export class BaseVisitor<T> {
     }
    
     public visitFormula = (node: Formula) => {
+        
         this.visit(node.body);
     }
 

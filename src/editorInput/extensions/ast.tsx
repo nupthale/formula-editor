@@ -77,6 +77,7 @@ export const astState = StateField.define<{ ast: Formula | null, errors: LintErr
 
         const context = tr.state.field(editorContext);
         const doc = tr.state.doc.toString();
+
         return parseDoc(doc, context);
     },
 });

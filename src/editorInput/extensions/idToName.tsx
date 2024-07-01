@@ -25,7 +25,9 @@ class Visitor extends BaseVisitor<void> {
         this.selectedCapId = view.state.field(selectedCapIdState);
         this.context = view.state.field(editorContext);
 
-        this.visitFormula(this.formula);
+        if (this.formula) {
+            this.visitFormula(this.formula);
+        }
     }
 
     protected visitIdentifier = (node: Identifier) => {

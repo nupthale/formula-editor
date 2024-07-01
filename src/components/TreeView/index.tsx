@@ -178,6 +178,8 @@ class Visitor {
 
 const toTreeData = (json: Formula) => {
     const visitor = new Visitor();
+    if (!json) return;
+
     const data = visitor.visitFormula(json);
 
     return data;

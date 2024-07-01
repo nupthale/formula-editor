@@ -40,7 +40,9 @@ class Visitor extends BaseVisitor<void> {
 
         this.formula = view.state.field(astState).ast!;
 
-        this.visitFormula(this.formula);
+        if (this.formula) {
+            this.visitFormula(this.formula);
+        }
     }
 
     protected visitIdentifier = (node: Identifier) => {

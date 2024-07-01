@@ -2,8 +2,8 @@ import { EditorView, Decoration, DecorationSet, ViewUpdate } from '@codemirror/v
 import { StateField, StateEffect } from '@codemirror/state';
 import { astState } from './ast';
 
-const markError = StateEffect.define<{from: number, to: number}>({
-  map: ({from, to}, change) => ({from: change.mapPos(from), to: change.mapPos(to)})
+const markError = StateEffect.define<{from: number, to: number} | null>({
+  map: (value, change) => value ? ({from: change.mapPos(value.from), to: change.mapPos(value.to)}) : value,
 })
 
 const errorFields = StateField.define<DecorationSet>({
@@ -12,9 +12,13 @@ const errorFields = StateField.define<DecorationSet>({
     },
     update(underlines, tr) {
       for (let e of tr.effects) if (e.is(markError)) {
-        underlines = underlines.update({
-          add: [errorMark.range(e.value.from, e.value.to)]
-        });
+        if (e.value) {
+          underlines = underlines.update({
+            add: [errorMark.range(e.value.from, e.value.to)]
+          });
+        } else {
+          return Decoration.none;
+        }
       }
 
       return underlines
@@ -36,11 +40,16 @@ export const dispatchError = (view: EditorView) => {
   const { errors } = view.state.field(astState);
   if (errors.length) {
     const error = errors[0];
+
     view.dispatch({
       effects: markError.of({
         from: error.range[0],
         to: error.range[1],
       }),
+    });
+  } else {
+    view.dispatch({
+      effects: markError.of(null),
     });
   }
 }
