@@ -60,7 +60,7 @@ export const getSuggestFields = (context: EditorContext, prefixText: string = ''
     const prefixTextLen = prefixText.length;
 
     return  fields.filter(field => 
-        field.name.length > prefixTextLen && 
+        field.name.length >= prefixTextLen && 
         field.name.indexOf(prefixText) === 0
     );
 }
@@ -70,7 +70,7 @@ export const getSuggestFunctions = (context: EditorContext, prefixText: string =
     const prefixTextLen = prefixText.length;
 
     return functions.filter(func =>
-        func.name.length > prefixTextLen &&
+        func.name.length >= prefixTextLen &&
         func.name.indexOf(prefixText) === 0
     );
 }
