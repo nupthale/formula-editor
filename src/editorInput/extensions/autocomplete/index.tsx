@@ -6,6 +6,7 @@ import { astState } from '../ast';
 import { editorContext } from '../context';
 
 import { updateSuffixText, suffixTextState, suffixTextDecorationState } from './suffixText';
+import { updateNameToId } from '../nameToId';
 import { EditorContext } from '../../interface';
 
 class Visitor extends BaseVisitor<void> {
@@ -16,7 +17,6 @@ class Visitor extends BaseVisitor<void> {
     constructor(
         private view: EditorView, 
         private cursorPos: number,
-        private event: KeyboardEvent,
     ) {
         super();
 
@@ -29,26 +29,8 @@ class Visitor extends BaseVisitor<void> {
     }
 
     private getSuffixText = (prefixText: string) => {
-        const { fields, functions } = this.context;
         const prefixTextLen = prefixText.length;
-
-        const field = fields.find(field => 
-            field.name.length > prefixTextLen && 
-            field.name.indexOf(prefixText) === 0
-        );
-
-        if (field) {
-            return field.name.slice(prefixTextLen);
-        }
-
-        const func = functions.find(func =>
-            func.name.length > prefixTextLen &&
-            func.name.indexOf(prefixText) === 0
-        )
-
-        if (func) {
-            return func.name.slice(prefixTextLen);
-        }
+        return this.context.suggestRef?.name.slice(prefixTextLen);
     }
 
     protected visitNameIdentifier = (node: NameIdentifier) => {
@@ -73,6 +55,44 @@ class Visitor extends BaseVisitor<void> {
     }
 }
 
+export const getSuggestFields = (context: EditorContext, prefixText: string = '') => {
+    const { fields } = context;
+    const prefixTextLen = prefixText.length;
+
+    return  fields.filter(field => 
+        field.name.length > prefixTextLen && 
+        field.name.indexOf(prefixText) === 0
+    );
+}
+
+export const getSuggestFunctions = (context: EditorContext, prefixText: string = '') => {
+    const { functions } = context;
+    const prefixTextLen = prefixText.length;
+
+    return functions.filter(func =>
+        func.name.length > prefixTextLen &&
+        func.name.indexOf(prefixText) === 0
+    );
+}
+
+export const getSuggestions = (context: EditorContext, prefixText: string = '') => {
+    const matchedFields = getSuggestFields(context, prefixText);
+
+    const matchedFuncs = getSuggestFunctions(context, prefixText);
+
+    return [...matchedFields, ...matchedFuncs];
+}
+
+export const updateAutocomplete = (view: EditorView) => {
+    const state = view.state;
+        const { from, to } = state.selection.main;
+ 
+        if (from !== to) return;
+
+        new Visitor(view, from);
+}
+
+
  /**
  * 如果光标位于一个name后，则找到可以提示的field和function，
  * 并生成一个decoration，放在name后
@@ -82,16 +102,11 @@ class Visitor extends BaseVisitor<void> {
  * */ 
 export const autocompleteHandler = EditorView.domEventHandlers({
     keyup(event, view) {
-        const state = view.state;
-        const { from, to } = state.selection.main;
- 
-        if (from !== to) return;
-
         if (event.key === 'Backspace') {
             return;
         }
 
-        new Visitor(view, from, event);
+        updateAutocomplete(view);
     },
     
     keydown(event, view) {
@@ -138,7 +153,7 @@ export const autocompleteHandler = EditorView.domEventHandlers({
                 break;    
             case 'ArrowRight':
                 event.preventDefault();
-                // 如果要变胶囊，需要加个visitor，把对应name直接替换为id触发后续idToName即可
+               
                 view.dispatch({
                     effects: updateSuffixText.of(null),
                     changes: [{
@@ -148,7 +163,18 @@ export const autocompleteHandler = EditorView.domEventHandlers({
                     selection,
                 });
 
-                break;  
+                updateNameToId(view);
+
+                break; 
+            case 'ArrowUp':
+            case 'ArrowDown':
+            case 'Tab':
+                // 如果有suffixText则preventDefault
+                if (context.suggestRef) {
+                    event.preventDefault();
+                }
+                
+                break;               
             default:
                 view.dispatch({
                     effects: updateSuffixText.of(null),

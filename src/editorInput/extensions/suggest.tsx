@@ -109,6 +109,11 @@ export const suggest = ({
 }: {
     onNodeChange: (node: NodeDescType | null) => void,
 }) => EditorView.updateListener.of((v) => {
+    // 如果光标没变化， 则不触发cursor change
+    if (!v.selectionSet) {
+        return;
+    }
+
     // cursor change
     onNodeChange(NodeVisitor.getNodeByPos(v.state));
 });

@@ -31,11 +31,29 @@ export type FunctionType = {
 };
 
 export type EditorContext = {
+    // 内部使用
+    suggestRef?: SuggestRefType;
     fields: FieldType[];
     functions: FunctionType[];
 };
+
+export type SuggestRefType = FieldType | FunctionType | null | undefined;
 
 export type LintErrorType = {
     range: [number, number];
     message: string;
 };
+
+export type EditorInputPropsType = { 
+    context: EditorContext,
+    defaultDoc: string, 
+    suggestRef: FieldType | FunctionType | undefined,
+    onChange: (doc: string) => void,
+    onNodeChange: (node: NodeDescType | null) => void,
+    onCursorChange: (pos: number) => void,
+};
+
+export type EditorInputExposeType = {
+    // 让当前的suggestRef生效
+    takeSuggest: () => void,
+}

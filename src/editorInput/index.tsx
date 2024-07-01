@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { EditorView } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 
@@ -17,23 +17,25 @@ import { lintPlugin, dispatchError } from './extensions/lint';
 import { autocomplete } from './extensions/autocomplete/index';
 import { updateListener } from './extensions/updateListener';
 
-import { EditorContext, NodeDescType } from './interface';
+import { useContext } from './hooks/useContext';
+import { useExpose } from './hooks/useExpose';
 
-export default function EditorInput({ 
+import { EditorInputPropsType, EditorInputExposeType } from './interface';
+
+export default forwardRef<EditorInputExposeType, EditorInputPropsType>(({
     context,
     defaultDoc, 
+    suggestRef,
     onChange,
     onNodeChange,
     onCursorChange,
-}: { 
-    context: EditorContext,
-    defaultDoc: string, 
-    onChange: (doc: string) => void,
-    onNodeChange: (node: NodeDescType | null) => void,
-    onCursorChange: (pos: number) => void,
-}) {
+}: EditorInputPropsType, ref) => {
     const editorDiv = useRef<HTMLDivElement>(null);
     const viewRef = useRef<EditorView>();
+
+    useExpose(ref, viewRef);
+
+    useContext({ viewRef, context, suggestRef});
 
     useEffect(() => {
         const state = EditorState.create({
@@ -41,7 +43,10 @@ export default function EditorInput({
             extensions: [
                 theme,
                 EditorView.lineWrapping,
-                editorContext.init(() => context),
+                editorContext.init(() => ({
+                    ...context, 
+                    suggestRef,
+                })),
                 astState,
                 selectedCapIdState,
                 suggest({ onNodeChange }),
@@ -77,4 +82,4 @@ export default function EditorInput({
     };
 
   return <div ref={editorDiv}></div>;
-}
+});

@@ -11,19 +11,15 @@ import { EditorContext } from '../interface';
 class Visitor extends BaseVisitor<void> {
     private context: EditorContext;
     
-    constructor(private viewUpdate: ViewUpdate, private pos: number) {
+    constructor(private view: EditorView, private pos: number, private ignorePos = false) {
         super();
 
-        const state = viewUpdate.state;
+        const state = view.state;
 
         const ast = state.field(astState).ast;
         this.context = state.field(editorContext);
 
         if (ast) this.visit(ast);
-    }
-
-    private get view() {
-        return this.viewUpdate.view;
     }
 
     protected visitNameIdentifier = (node: NameIdentifier) => {
@@ -36,7 +32,8 @@ class Visitor extends BaseVisitor<void> {
 
         if (
             (this.pos > to) ||
-            (this.pos < from)
+            (this.pos < from) ||
+            this.ignorePos
         ) {   
             this.view.dispatch({
                 changes: { from, to, insert: `\$\$[${field.id}:${field.type}]` },
@@ -45,10 +42,18 @@ class Visitor extends BaseVisitor<void> {
     }
 }
 
+export const updateNameToId = (view: EditorView) => {
+    new Visitor(view, 0, true);
+}
+
 export const nameToId = EditorView.updateListener.of((v) => {
     const state = v.state;
     const { from, to } = state.selection.main;
     if (from !== to) return null;
 
-    new Visitor(v, from);
+    if (!v.docChanged) {
+        return;
+    }
+
+    new Visitor(v.view, from);
 });

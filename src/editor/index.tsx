@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import { EditorContext, NodeDescType } from '../editorInput/interface';
 import EditorInput from '../editorInput';
 
 import { useNodeDesc } from './hooks/useNodeDesc';
 import { useSuggest } from './hooks/useSuggest';
-import { Identifier } from '../language/AST/Identifier';
+import { useEditorRef } from './hooks/useEditorRef';
 
 import SuggestList from './modules/SuggestList';
+
+import { FieldType, FunctionType} from '../editorInput/interface';
 
 export default function Editor({
     defaultDoc,
@@ -15,27 +17,41 @@ export default function Editor({
     onChange,
 }: {
     defaultDoc: string,
-    context: EditorContext,
+    context: Omit<EditorContext, 'suggestRef'>,
     onChange: (doc: string) => void,
 }) {
     // 当前光标位置
     const [cursorPos, setCursorPos] = useState(0);
+
+    // 当前Suggest区域，选中的字段、函数
+    const [suggestItem, onSelectSuggestItem] = useState<FieldType | FunctionType>();
 
     // 当前ast node
     const [node, setNode] = useState<NodeDescType | null>(null);
     
     const nodeDesc = useNodeDesc({ node, context });
 
-    const { suggestInfo } = useSuggest({ cursorPos, node, context });
+    const { editorRef, handleTakeSuggest } = useEditorRef();
 
+    const { suggestInfo, handleKeyDown } = useSuggest({ 
+        cursorPos, 
+        node, 
+        context, 
+        suggestItem, 
+        onSelectSuggestItem, 
+        onTakeSuggest: handleTakeSuggest,
+    });
+    
     return (
-        <div className="formula-editor">
+        <div className="formula-editor" onKeyDown={handleKeyDown}>
             {/* 编辑区 */}
             <div className="formula-editor__head">
                 <EditorInput 
+                    ref={editorRef}
                     context={context} 
-                    defaultDoc={defaultDoc} 
-                    onChange={onChange} 
+                    defaultDoc={defaultDoc}
+                    suggestRef={suggestItem} 
+                    onChange={onChange}
                     onCursorChange={setCursorPos}
                     onNodeChange={setNode} 
                 />
@@ -56,7 +72,13 @@ export default function Editor({
                     suggestInfo?.matches ? (
                         <div className="formula-editor-suggest">
                             <div className="formula-editor-suggest__list">
-                                <SuggestList fields={suggestInfo.fields} functions={suggestInfo.functions} />
+                                <SuggestList 
+                                    fields={suggestInfo.fields} 
+                                    functions={suggestInfo.functions} 
+                                    suggestItem={suggestItem}
+                                    onTakeSuggest={handleTakeSuggest}
+                                    onSelectSuggestItem={onSelectSuggestItem}
+                                />
                             </div>
                         </div>
                     ) : ''
