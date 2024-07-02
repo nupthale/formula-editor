@@ -7,8 +7,19 @@ import { editorContext } from '../context';
 
 import { updateSuffixText, suffixTextState, suffixTextDecorationState } from './suffixText';
 import { updateNameToId } from '../nameToId';
-import { EditorContext } from '../../interface';
+import { EditorContext, SuggestRefType } from '../../interface';
 
+
+// 如果是函数， 则补充函数名()， 如果是字段，则补充字段名
+export const getSuffixText = (prefixText: string, suggestRef: SuggestRefType) => {
+    const prefixTextLen = prefixText.length;
+
+    if (!suggestRef) return '';
+
+    const name = suggestRef.isField ? suggestRef.name : `${suggestRef.name}()`;
+
+    return name.slice(prefixTextLen);
+}
 class Visitor extends BaseVisitor<void> {
     public widget: DecorationSet = Decoration.none;
 
@@ -28,19 +39,6 @@ class Visitor extends BaseVisitor<void> {
         }
     }
 
-    // 如果是函数， 则补充函数名()， 如果是字段，则补充字段名
-    private getSuffixText = (prefixText: string) => {
-        const prefixTextLen = prefixText.length;
-
-        const suggestRef = this.context.suggestRef;
-
-        if (!suggestRef) return '';
-
-        const name = suggestRef.isField ? suggestRef.name : `${suggestRef.name}()`;
-
-        return name.slice(prefixTextLen);
-    }
-
     protected visitNameIdentifier = (node: NameIdentifier) => {
         const [from] = node.range;
         const fromPos = node.isEscape ? from + 1 : from;
@@ -50,7 +48,7 @@ class Visitor extends BaseVisitor<void> {
             return;
         }
 
-        const suffixText = this.getSuffixText(node.name);
+        const suffixText = getSuffixText(node.name, this.context.suggestRef);
 
         if (suffixText) {
             this.view.dispatch({
@@ -129,23 +127,28 @@ export const autocompleteHandler = EditorView.domEventHandlers({
         
         const context = view.state.field(editorContext);
         const suffixText = view.state.field(suffixTextState);
-        
-        if (suffixText === null) {
-            return;
+    
+        let text = '';
+        let pos = 0;
+        let selection = null;
+
+        if (suffixText) {
+            text = suffixText.text;
+            pos = suffixText.pos;
+            const destPos = pos + text.length;
+            selection = { head: destPos, anchor: destPos };
         }
 
-        const { text, pos } = suffixText;
-        const destPos = pos + text.length;
-        const selection = { head: destPos, anchor: destPos };
-        
         switch(event.key) {
             case ' ':
+                if (!suffixText) return;
                 view.dispatch({
                     effects: updateSuffixText.of(null),
                 });
 
                 break;
             case 'Backspace':
+                if (!suffixText) return;
                 event.preventDefault();
 
                 view.dispatch({
@@ -154,6 +157,8 @@ export const autocompleteHandler = EditorView.domEventHandlers({
 
                 break;
             case 'ArrowLeft':
+                if (!suffixText) return;
+
                 view.dispatch({
                     effects: updateSuffixText.of(null),
                     changes: [{
@@ -164,8 +169,10 @@ export const autocompleteHandler = EditorView.domEventHandlers({
 
                 break;    
             case 'ArrowRight':
+                if (!suffixText || !selection) return;
+
                 event.preventDefault();
-               
+
                 view.dispatch({
                     effects: updateSuffixText.of(null),
                     changes: [{

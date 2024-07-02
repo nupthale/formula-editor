@@ -22,8 +22,8 @@ import './App.css'
 // const json = errors?.length ? { errors } : astJson;
 
 function App() {
-  // const [doc, setDoc] = useState('$$[32:number] + $$sum1(1 + 1) + abc + $$[1:number] + $$[31:number] + 项');
-  const [doc, setDoc] = useState('1 +             ');
+  const [doc, setDoc] = useState('$$[32:number] + $$sum1(1 + 1) + abc + $$[1:number] + $$[31:number] + 项');
+  // const [doc, setDoc] = useState('1 +  sum(1, $$[1:string], $$[1:string], $$[1:string], $$[1:string], $$[1:string], $$[1:string])  + sum(1, sum(xiang))   ');
 
   const [json, ast] = useMemo(() => {
     const { errors, ast, astJson } = parse(doc);
@@ -37,7 +37,7 @@ function App() {
         { json ? <ReactJson src={json}></ReactJson> : '' }
       </div>
       <div className="w-4/12 h-full editorSection">
-        <Editor context={editorContext} defaultDoc={doc} onChange={setDoc} />
+        <Editor context={editorContext} defaultDoc={doc} onChange={setDoc} debug />
       </div>
       <div className="w-4/12 h-full overflow-auto">
         { ast ? <TreeView formula={ast} ></TreeView> : '' }

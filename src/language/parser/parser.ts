@@ -20,6 +20,7 @@ import {
 
 import { AstRule } from '../interface';
 import { ASTNode } from '../AST/_Base';
+import { Arguments } from '../AST/Arguments';
 import { BaseParser } from './base';
 import { CallExpression } from '../AST/CallExpression';
 
@@ -273,7 +274,7 @@ export class Parser extends BaseParser {
         const functionName = this.CONSUME(FunctionName);
         let callee = this.ACTION(() => this.nodeFactory.identifier(functionName));
 
-        const argumentList = this.SUBRULE(this.arguments);
+        const argumentList = this.SUBRULE(this.arguments) as Arguments;
 
         return this.ACTION(() => this.nodeFactory.callExpression(callee, argumentList));
     });

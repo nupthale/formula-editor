@@ -1,4 +1,5 @@
 import { ASTNode } from './_Base';
+import { Arguments } from './Arguments';
 import { RangeType } from './interface';
 
 export class CallExpression extends ASTNode {
@@ -6,7 +7,7 @@ export class CallExpression extends ASTNode {
     
     constructor(
         public callee: ASTNode,
-        public argumentList: ASTNode,
+        public argumentList: Arguments,
     ) {
         super();
 

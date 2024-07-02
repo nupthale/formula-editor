@@ -7,6 +7,7 @@ import { NodeVisitor as SuggestNodeVisitor } from '../suggest';
 import { updateSuffixText, suffixTextState } from './suffixText';
 import { updateNameToId } from '../nameToId';
 import { NameIdentifier } from '../../../language/AST/NameIdentifier';
+import { getSuffixText } from './index';
 
 export const getDestPos = (isField: boolean, destPos: number) => {
     // 如果是函数， 则光标放到结尾的括号前
@@ -42,21 +43,21 @@ export const takeSuggest = (view: EditorView) => {
         // get node by cursor，if node is nameIdentifier, replace node with suggestRef
         const node = SuggestNodeVisitor.getNodeByPos(view.state);
 
-        if (node?.raw instanceof NameIdentifier && suggestText.includes(node.raw.name)) {
-            destPos = getDestPos(suggestRef.isField!, node.raw.range[0] + suggestText.length);
-
+        if (node?.raw instanceof NameIdentifier && node.raw.name && suggestText.includes(node.raw.name)) {
+            const suffixText = getSuffixText(node.raw.name, suggestRef);
+            destPos = getDestPos(suggestRef.isField!, from + suffixText.length);
+            
             view.dispatch({
                 effects: updateSuffixText.of(null),
                 changes: [{
-                    from: node.raw.range[0],
-                    to: node.raw.range[1],
-                    insert: suggestText,
+                    from,
+                    to: from + suffixText.length,
+                    insert: suffixText,
                 }],
             });
         } else {
             destPos = getDestPos(suggestRef.isField!, from + suggestText.length);
-    
-            // 如果要变胶囊，需要加个visitor，把对应name直接替换为id触发后续idToName即可
+
             view.dispatch({
                 effects: updateSuffixText.of(null),
                 changes: [{

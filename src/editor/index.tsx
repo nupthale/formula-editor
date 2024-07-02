@@ -10,10 +10,12 @@ import { useEditorRef } from './hooks/useEditorRef';
 import SuggestList from './modules/SuggestList';
 
 export default function Editor({
+    debug,
     defaultDoc,
     context: propContext,
     onChange,
 }: {
+    debug?: boolean,
     defaultDoc: string,
     context: Omit<EditorContext, 'suggestRef'>,
     onChange: (doc: string) => void,
@@ -35,7 +37,7 @@ export default function Editor({
     // 当前ast node
     const [node, setNode] = useState<NodeDescType | null>(null);
     
-    const nodeDesc = useNodeDesc({ node, context });
+    const nodeDesc = useNodeDesc({ node, context, cursorPos });
 
     const { editorRef, handleTakeSuggest } = useEditorRef();
 
@@ -52,7 +54,7 @@ export default function Editor({
         <div className="formula-editor" onKeyDown={handleKeyDown}>
             {/* 编辑区 */}
             <div className="formula-editor__head">
-                <EditorInput 
+                <EditorInput
                     ref={editorRef}
                     context={context} 
                     defaultDoc={defaultDoc}
@@ -86,6 +88,17 @@ export default function Editor({
                                     onSelectSuggestItem={onSelectSuggestItem}
                                 />
                             </div>
+                        </div>
+                    ) : ''
+                }
+
+                {/* debug */}
+                {
+                    debug ? (
+                        <div className="formula-editor-debug flex items-center gap-4">
+                            <span>光标位置: {cursorPos}</span>
+                            {node?.raw.type ? (<span>当前叶节点类型: {node?.raw.type}</span>) : ''}
+                            {suggestItem?.name ? (<span>选中提示项：{suggestItem?.name}</span>) : '' }
                         </div>
                     ) : ''
                 }

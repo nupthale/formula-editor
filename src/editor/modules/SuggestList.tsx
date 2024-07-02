@@ -56,8 +56,8 @@ export default function SuggestList({
                     <div>
                         <div className="formula-editor-suggest__title">字段引用</div>
                         {
-                            fields.map((item, index) => (
-                                <div key={index} className={`formula-editor-suggest__item ${suggestItem === item ? 'formula-editor-suggest__item--selected' : ''}`}>
+                            fields.map((item) => (
+                                <div key={item.id} className={`formula-editor-suggest__item ${suggestItem === item ? 'formula-editor-suggest__item--selected' : ''}`}>
                                     { renderField(item) }
                                 </div>
                             ))
@@ -71,7 +71,7 @@ export default function SuggestList({
                         <div className="formula-editor-suggest__title">函数列表</div>
                         {
                             functions.map((item, index) => (
-                                <div key={index} className={`formula-editor-suggest__item ${suggestItem === item ? 'formula-editor-suggest__item--selected' : ''}`}>
+                                <div key={item.name + index} className={`formula-editor-suggest__item ${suggestItem === item ? 'formula-editor-suggest__item--selected' : ''}`}>
                                     { renderFunction(item) }
                                 </div>
                             ))

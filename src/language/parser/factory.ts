@@ -87,7 +87,7 @@ export class ASTNodeFactory {
         return new NameIdentifier(nameToken);
     }
 
-    callExpression = (callee: ASTNode, argumentList: ASTNode) => {
+    callExpression = (callee: ASTNode, argumentList: Arguments) => {
         return new CallExpression(callee, argumentList);
     }
 

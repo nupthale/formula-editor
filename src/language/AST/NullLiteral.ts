@@ -3,7 +3,7 @@ import { RangeType } from './interface';
 
 // 使用场景函数调用多个逗号， 比如sum(,,,,)这个时候补充literal，只是image为空
 export class NullLiteral extends ASTNode {
-    type = 'Literal';
+    type = 'NullLiteral';
 
     constructor(
         public range: RangeType,
