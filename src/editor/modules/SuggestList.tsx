@@ -54,7 +54,7 @@ export default function SuggestList({
             {
                 fields.length ? (
                     <div>
-                        <div className="formula-editor-suggest__title">字段引用</div>
+                        <div className="formula-editor-suggest__title">属性列表</div>
                         {
                             fields.map((item) => (
                                 <div key={item.id} className={`formula-editor-suggest__item ${suggestItem === item ? 'formula-editor-suggest__item--selected' : ''}`}>

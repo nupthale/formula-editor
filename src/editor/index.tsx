@@ -105,7 +105,7 @@ export default function Editor({
             </div>
 
             <div className="formula-editor__footer">
-                <div>帮助中心</div>
+                <div>帮助文档</div>
             </div>
 
         </div>
