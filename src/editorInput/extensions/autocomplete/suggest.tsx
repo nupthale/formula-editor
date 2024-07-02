@@ -8,6 +8,11 @@ import { updateSuffixText, suffixTextState } from './suffixText';
 import { updateNameToId } from '../nameToId';
 import { NameIdentifier } from '../../../language/AST/NameIdentifier';
 
+export const getDestPos = (isField: boolean, destPos: number) => {
+    // 如果是函数， 则光标放到结尾的括号前
+    return isField ? destPos : destPos - 1;
+}
+
 export const takeSuggest = (view: EditorView) => {
     const context = view.state.field(editorContext);
     const { suggestRef } = context;    
@@ -15,10 +20,13 @@ export const takeSuggest = (view: EditorView) => {
     const suffixText = view.state.field(suffixTextState);
     let destPos = 0;
 
+    if (!suggestRef) return;
+
     if (suffixText) {
         const { text, pos } = suffixText;
-        destPos = pos + text.length;
-      
+
+        destPos = getDestPos(suggestRef.isField!, pos + text.length);
+
         view.dispatch({
             effects: updateSuffixText.of(null),
             changes: [{
@@ -35,7 +43,7 @@ export const takeSuggest = (view: EditorView) => {
         const node = SuggestNodeVisitor.getNodeByPos(view.state);
 
         if (node?.raw instanceof NameIdentifier && suggestText.includes(node.raw.name)) {
-            destPos = node.raw.range[0] + suggestText.length;
+            destPos = getDestPos(suggestRef.isField!, node.raw.range[0] + suggestText.length);
 
             view.dispatch({
                 effects: updateSuffixText.of(null),
@@ -46,7 +54,7 @@ export const takeSuggest = (view: EditorView) => {
                 }],
             });
         } else {
-            destPos = from + suggestText.length;
+            destPos = getDestPos(suggestRef.isField!, from + suggestText.length);
     
             // 如果要变胶囊，需要加个visitor，把对应name直接替换为id触发后续idToName即可
             view.dispatch({

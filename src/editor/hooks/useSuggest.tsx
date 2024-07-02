@@ -3,7 +3,7 @@ import { useMemo, KeyboardEvent } from 'react';
 
 import { NameIdentifier } from '../../language/AST/NameIdentifier';
 
-import { NodeDescType, EditorContext, FieldType, FunctionType } from '../../editorInput/interface';
+import { NodeDescType, EditorContext, FieldType, FunctionType, SuggestRefType } from '../../editorInput/interface';
 
 import { getSuggestions, getSuggestFields, getSuggestFunctions} from '../../editorInput/extensions/autocomplete/index';
 
@@ -18,9 +18,9 @@ export const useSuggest = ({
     cursorPos: number, 
     node: NodeDescType | null, 
     context: EditorContext,
-    suggestItem?: FieldType | FunctionType | null,
+    suggestItem?: SuggestRefType,
     onTakeSuggest: () => void,
-    onSelectSuggestItem: (item: FieldType | FunctionType) => void,
+    onSelectSuggestItem: (item: SuggestRefType) => void,
 }) => {
     const handleKeyDown = (e: KeyboardEvent) => {
         if (!node?.raw) return;

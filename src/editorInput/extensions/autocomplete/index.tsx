@@ -28,9 +28,17 @@ class Visitor extends BaseVisitor<void> {
         }
     }
 
+    // 如果是函数， 则补充函数名()， 如果是字段，则补充字段名
     private getSuffixText = (prefixText: string) => {
         const prefixTextLen = prefixText.length;
-        return this.context.suggestRef?.name.slice(prefixTextLen);
+
+        const suggestRef = this.context.suggestRef;
+
+        if (!suggestRef) return '';
+
+        const name = suggestRef.isField ? suggestRef.name : `${suggestRef.name}()`;
+
+        return name.slice(prefixTextLen);
     }
 
     protected visitNameIdentifier = (node: NameIdentifier) => {

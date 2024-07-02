@@ -6,6 +6,7 @@ export type NodeDescType = {
 };
 
 export type FieldType = {
+    isField?: true,
     id: string;
     name: string;
     type: string;
@@ -24,6 +25,7 @@ export type FunctionParamType = {
 };
 
 export type FunctionType = {
+    isField?: false,
     name: string;
     params: FunctionParamType[];
     example: string;
@@ -47,7 +49,7 @@ export type LintErrorType = {
 export type EditorInputPropsType = { 
     context: EditorContext,
     defaultDoc: string, 
-    suggestRef: FieldType | FunctionType | undefined,
+    suggestRef: SuggestRefType,
     onChange: (doc: string) => void,
     onNodeChange: (node: NodeDescType | null) => void,
     onCursorChange: (pos: number) => void,

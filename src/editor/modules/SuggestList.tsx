@@ -1,4 +1,4 @@
-import { FieldType, FunctionType } from '../../editorInput/interface';
+import { FieldType, FunctionType, SuggestRefType } from '../../editorInput/interface';
 
 export default function SuggestList({ 
     fields = [],
@@ -9,9 +9,9 @@ export default function SuggestList({
 }: {
     fields: FieldType[],
     functions: FunctionType[],
-    suggestItem?: FieldType | FunctionType,
+    suggestItem?: SuggestRefType,
     onTakeSuggest: () => void,
-    onSelectSuggestItem: (item: FieldType | FunctionType) => void,
+    onSelectSuggestItem: (item: SuggestRefType) => void,
 }) {
     const renderField = (item: FieldType) => {
         return (

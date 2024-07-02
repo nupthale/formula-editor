@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useMemo } from 'react';
 
-import { EditorContext, NodeDescType } from '../editorInput/interface';
+import { EditorContext, NodeDescType, SuggestRefType } from '../editorInput/interface';
 import EditorInput from '../editorInput';
 
 import { useNodeDesc } from './hooks/useNodeDesc';
@@ -9,11 +9,9 @@ import { useEditorRef } from './hooks/useEditorRef';
 
 import SuggestList from './modules/SuggestList';
 
-import { FieldType, FunctionType} from '../editorInput/interface';
-
 export default function Editor({
     defaultDoc,
-    context,
+    context: propContext,
     onChange,
 }: {
     defaultDoc: string,
@@ -23,8 +21,16 @@ export default function Editor({
     // 当前光标位置
     const [cursorPos, setCursorPos] = useState(0);
 
+    const context = useMemo(() => {
+        const _context = { ...propContext };
+        _context.fields?.map(field => field.isField = true);
+        _context.functions?.map(func => func.isField = false);
+
+        return _context;
+    }, [propContext]);
+
     // 当前Suggest区域，选中的字段、函数
-    const [suggestItem, onSelectSuggestItem] = useState<FieldType | FunctionType>();
+    const [suggestItem, onSelectSuggestItem] = useState<SuggestRefType>();
 
     // 当前ast node
     const [node, setNode] = useState<NodeDescType | null>(null);
