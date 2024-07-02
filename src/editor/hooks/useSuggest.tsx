@@ -56,6 +56,7 @@ export const useSuggest = ({
     }
 
     const suggestInfo = useMemo(() => {
+        debugger;
         if (!node || !(node?.raw instanceof NameIdentifier)) {
             return {
                 matches: false,
@@ -65,8 +66,8 @@ export const useSuggest = ({
         };
 
         const prefixText = (node?.raw as NameIdentifier).name;
-        let suggestFields: FieldType[] = getSuggestFields(context, prefixText);
-        let suggestFunctions: FunctionType[] = getSuggestFunctions(context, prefixText);
+        let suggestFields: FieldType[] = getSuggestFields(context, prefixText, node.raw.isRecovered);
+        let suggestFunctions: FunctionType[] = getSuggestFunctions(context, prefixText, node.raw.isRecovered);
 
         onSelectSuggestItem(suggestFields?.[0] || suggestFunctions?.[0]);
         

@@ -42,11 +42,11 @@ class Visitor extends BaseVisitor<void> {
     }
 
     protected visitNameIdentifier = (node: NameIdentifier) => {
-        const [from, to] = node.range;
+        const [from] = node.range;
         const fromPos = node.isEscape ? from + 1 : from;
         const endPos = fromPos + node.name.length;
 
-        if (this.cursorPos !== endPos || from > to) {
+        if (this.cursorPos !== endPos) {
             return;
         }
 
@@ -56,26 +56,30 @@ class Visitor extends BaseVisitor<void> {
             this.view.dispatch({
                 effects: updateSuffixText.of({
                     text: suffixText,
-                    pos: endPos,
+                    pos: this.cursorPos,
                 }),
             });
         }
     }
 }
 
-export const getSuggestFields = (context: EditorContext, prefixText: string = '') => {
+export const getSuggestFields = (context: EditorContext, prefixText: string = '', isRecovered: boolean) => {
     const { fields } = context;
     const prefixTextLen = prefixText.length;
 
-    return  fields.filter(field => 
+    if (isRecovered) return fields;
+
+    return fields.filter(field => 
         field.name.length >= prefixTextLen && 
         field.name.indexOf(prefixText) === 0
     );
 }
 
-export const getSuggestFunctions = (context: EditorContext, prefixText: string = '') => {
+export const getSuggestFunctions = (context: EditorContext, prefixText: string = '', isRecovered: boolean) => {
     const { functions } = context;
     const prefixTextLen = prefixText.length;
+
+    if (isRecovered) return functions;
 
     return functions.filter(func =>
         func.name.length >= prefixTextLen &&
@@ -83,10 +87,10 @@ export const getSuggestFunctions = (context: EditorContext, prefixText: string =
     );
 }
 
-export const getSuggestions = (context: EditorContext, prefixText: string = '') => {
-    const matchedFields = getSuggestFields(context, prefixText);
+export const getSuggestions = (context: EditorContext, prefixText: string = '', isRecovered: boolean) => {
+    const matchedFields = getSuggestFields(context, prefixText, isRecovered);
 
-    const matchedFuncs = getSuggestFunctions(context, prefixText);
+    const matchedFuncs = getSuggestFunctions(context, prefixText, isRecovered);
 
     return [...matchedFields, ...matchedFuncs];
 }

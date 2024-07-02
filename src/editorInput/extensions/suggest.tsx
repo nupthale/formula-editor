@@ -66,6 +66,7 @@ export class NodeVisitor extends BaseVisitor<void> {
     }
 
     protected visitNameIdentifier = (node: NameIdentifier) => {
+        console.info('##', node.name, node.isRecovered, this.pos);
         if (!this.matches(node)) {
             return;
         }
@@ -114,6 +115,9 @@ export const suggest = ({
         return;
     }
 
+    const node = NodeVisitor.getNodeByPos(v.state);
+    console.info('#node', node);
+
     // cursor change
-    onNodeChange(NodeVisitor.getNodeByPos(v.state));
+    onNodeChange(node);
 });
