@@ -106,6 +106,7 @@ export default function Editor({
 
             <div className="formula-editor__footer">
                 <div>帮助文档</div>
+                <button onClick={() => editorRef.current?.format()}>格式化</button>
             </div>
 
         </div>

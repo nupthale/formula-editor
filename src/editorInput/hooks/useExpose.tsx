@@ -3,6 +3,7 @@ import { useImperativeHandle, ForwardedRef, MutableRefObject } from 'react';
 import { EditorView } from '@codemirror/view';
 
 import { takeSuggest } from '../extensions/autocomplete/suggest';
+import { formatCommand } from '../extensions/format';
 
 import { EditorInputExposeType } from '../interface';
 
@@ -18,5 +19,12 @@ export const useExpose = (
 
             takeSuggest(viewRef.current);
         },
+        format: () => {
+            if (!viewRef.current) {
+                return;
+            }
+
+            formatCommand(viewRef.current);
+        }
     }));
 }

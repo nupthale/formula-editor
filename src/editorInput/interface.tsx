@@ -58,4 +58,5 @@ export type EditorInputPropsType = {
 export type EditorInputExposeType = {
     // 让当前的suggestRef生效
     takeSuggest: () => void,
+    format: () => void,
 }
